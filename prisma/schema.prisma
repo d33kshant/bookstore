@@ -24,4 +24,7 @@ model Book {
 
   average_rating Float
   ratings_count  Int
+
+  selling_price  Int
+  original_price Int
 }
