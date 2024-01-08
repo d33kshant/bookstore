@@ -17,7 +17,7 @@ export default function SearchPage() {
 
   useEffect(() => {
     const fetchBooks = async () => {
-      const base = new URL('http://localhost:3000/api/books')
+      const base = new URL(window.location.origin + '/api/books')
       base.searchParams.set("sort", sort)
       base.searchParams.set("page", page)
       base.searchParams.set("query", params.get("query") || '')

@@ -15,7 +15,7 @@ export default function BookPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     const fetchBook = async () => {
-      const base = new URL('http://localhost:3000/api/books')
+      const base = new URL(window.location.origin + '/api/books')
       base.searchParams.set("id", params.id)
 
       const response = await fetch(base)
@@ -29,7 +29,7 @@ export default function BookPage({ params }: { params: { id: string } }) {
 
   useEffect(() => {
     const fetchRecommends = async () => {
-      const base = new URL('http://localhost:3000/api/recommend')
+      const base = new URL(window.location.origin + '/api/recommend')
       base.searchParams.set("id", params.id)
       base.searchParams.set("page", page+'')
 
