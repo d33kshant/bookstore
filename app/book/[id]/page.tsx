@@ -92,7 +92,7 @@ export default function BookPage({ params }: { params: { id: string } }) {
               </Box>
               <Divider />
               <Box p={2} gap={1} display="flex" flexDirection="column">
-                {recommends.map(book => <Typography>• {book.title}</Typography>)}
+                {recommends.map((book, key) => <Typography key={key}>• {book.title}</Typography>)}
               </Box>
             </Box>
           </Paper>
