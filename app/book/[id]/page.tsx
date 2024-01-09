@@ -54,6 +54,11 @@ export default function BookPage({ params }: { params: { id: string } }) {
                 <Paper>
                   <img className="h-72 rounded" src={book?.thumbnail} alt={book?.title} />
                 </Paper>
+                <Box display="flex" alignItems="center" gap={1}>
+                  {book?.selling_price !== book?.original_price && <Typography fontWeight={400} variant="h6" sx={{ textDecoration: "line-through" }} color="gray">${book?.original_price}</Typography>}
+                  <Typography variant="h6" flex={1} fontWeight={500}>${book?.selling_price}</Typography>
+                  {book && book?.selling_price !== book?.original_price && <Typography color="green" variant="h6">{(((book.original_price - book.selling_price) / book.original_price) * 100).toFixed(1)}% off</Typography>}
+                </Box>
                 <Box display="flex" gap={1}>
                   <Button variant="contained" color="success" startIcon={<BookmarkAddOutlined />}>Save For Later</Button>
                   <Button variant="contained" color="secondary" startIcon={<AddShoppingCart />}>Add To Cart</Button>
@@ -63,10 +68,6 @@ export default function BookPage({ params }: { params: { id: string } }) {
               <Box padding={2}>
                 <Typography>{book?.authors.replaceAll(';', ", ")}</Typography>
                 <Typography variant="h4">{book?.title}</Typography>
-                <Box display="flex" alignItems="center" gap={1}>
-                  {book?.selling_price !== book?.original_price && <Typography fontWeight={400} variant="h6" sx={{ textDecoration: "line-through" }} color="gray">${book?.original_price}</Typography>}
-                  <Typography variant="h6" flex={1} fontWeight={500}>${book?.selling_price}</Typography>
-                </Box>
                 <Box mt={1} display="flex" gap={1} alignItems="center">
                   <Rating readOnly value={book?.average_rating || 0} />
                   <Typography>{book?.average_rating.toFixed(1)} ({book?.ratings_count}) • {book?.published_year}</Typography>
