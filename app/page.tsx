@@ -88,6 +88,12 @@ export default function Home() {
               />
             </Box>
           </Paper>
+          <Paper>
+            <Box href="/search" component="a" display="flex" p={2}>
+              <Typography fontWeight={500} flex={1}>Explore all books</Typography>
+              <KeyboardArrowRight />
+            </Box>
+          </Paper>
         </Box>
       </Box>
     </Box>
