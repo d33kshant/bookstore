@@ -28,3 +28,10 @@ model Book {
   selling_price  Int
   original_price Int
 }
+
+model Offer {
+  id String @id @default(uuid())
+
+  href        String
+  banner      String
+}
