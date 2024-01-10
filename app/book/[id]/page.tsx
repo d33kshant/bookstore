@@ -4,7 +4,8 @@ import { Box, Button, Chip, Divider, IconButton, Paper, Rating, Typography } fro
 import AppBar from "@/app/components/AppBar";
 import { useEffect, useState } from "react";
 import { Book } from "@prisma/client";
-import { AddShoppingCart, BookmarkAddOutlined, Refresh } from "@mui/icons-material";
+import { AddShoppingCart, BookmarkAddOutlined, Refresh, Star } from "@mui/icons-material";
+import Carousel from "@/app/components/Carousel";
 
 export default function BookPage({ params }: { params: { id: string } }) {
 
@@ -12,11 +13,12 @@ export default function BookPage({ params }: { params: { id: string } }) {
   
   const [recommends, setRecommends] = useState<Book[]>([])
   const [page, setPage] = useState(1)
+  const [step, setStep] = useState(0)
+  const [maxStep, setMaxStep] = useState(0)
 
   useEffect(() => {
     const fetchBook = async () => {
-      const base = new URL(window.location.origin + '/api/books')
-      base.searchParams.set("id", params.id)
+      const base = new URL(window.location.origin + '/api/books/' + params.id)
 
       const response = await fetch(base)
       const book = await response.json()
@@ -36,12 +38,19 @@ export default function BookPage({ params }: { params: { id: string } }) {
       const response = await fetch(base)
       const data = await response.json()
 
-      if (data) setRecommends(data.books)
+      if (data) {
+        setRecommends(data.books)
+        setMaxStep(data.books.length)
+        setStep(0)
+      }
     }
     fetchRecommends()
   }, [page])
 
   const recommendNext = () => setPage(prev => prev + 1)
+
+  const nextBook = () => setStep(prev => Math.min(prev + 1, maxStep))
+  const prevBook = () => setStep(prev => Math.max(prev - 1, 0))
 
   return (
     <Box>
@@ -83,20 +92,36 @@ export default function BookPage({ params }: { params: { id: string } }) {
               </Box>
             </Box>
           </Paper>
-          <Paper>
-            <Box>
+          {recommends.length > 0 && <Carousel
+            onNextClick={nextBook}
+            onBackClick={prevBook}
+            title="Recommended Readings"
+            steps={maxStep}
+            activeStep={step}
+            header={
               <Box px={2}  py={1} display="flex" alignItems="center">
                 <Typography flex={1} textTransform="uppercase" variant="h6">Recommended Readings</Typography>
                 <IconButton size="small" onClick={recommendNext}>
                   <Refresh />
                 </IconButton>
               </Box>
-              <Divider />
-              <Box p={2} gap={1} display="flex" flexDirection="column">
-                {recommends.map((book, key) => <Typography key={key}>• {book.title}</Typography>)}
+            }
+          >
+            <Box component="a" href={`/book/${recommends[step].id}`} height="100%" display="flex" flexDirection="column" textAlign="center" justifyContent="center" alignItems="center" gap={2}>
+              <Paper sx={{ overflow: "hidden" }}>
+                <img className="w-fit h-40" src={recommends[step].thumbnail} alt={recommends[step].title} />
+              </Paper>
+              <Box>
+                <Typography fontWeight={500}>{recommends[step].title}</Typography>
+                <Typography color="gray">{recommends[step].categories}</Typography>
+              </Box>
+              <Box color="gray" display="flex" gap={1}>
+                <Star fontSize="small" color="action" />
+                <Typography color="inherit">{recommends[step].average_rating}</Typography>
+                <Typography color="inherit">({recommends[step].ratings_count})</Typography>
               </Box>
             </Box>
-          </Paper>
+          </Carousel>}
         </Box>
       </Box>
     </Box>
