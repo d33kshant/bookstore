@@ -3,15 +3,6 @@ import prisma from "@/app/database"
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams
-  
-  const id = params.get("id") || ''
-  if (id) {
-    const book = await prisma.book.findUnique({ where: { id }})
-    if (book) {
-      return Response.json(book)
-    }
-    return Response.json({ error: "Not found" })
-  }
 
   const page = params.get("page") || 1
   const query = params.get("query") || ''
