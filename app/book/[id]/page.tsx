@@ -14,7 +14,7 @@ export default function BookPage({ params }: { params: { id: string } }) {
   const [recommends, setRecommends] = useState<Book[]>([])
   const [page, setPage] = useState(1)
   const [step, setStep] = useState(0)
-  const [maxStep, setMaxStep] = useState(0)
+  const [maxSteps, setMaxSteps] = useState(0)
 
   useEffect(() => {
     const fetchBook = async () => {
@@ -40,7 +40,7 @@ export default function BookPage({ params }: { params: { id: string } }) {
 
       if (data) {
         setRecommends(data.books)
-        setMaxStep(data.books.length)
+        setMaxSteps(data.books.length)
         setStep(0)
       }
     }
@@ -49,8 +49,19 @@ export default function BookPage({ params }: { params: { id: string } }) {
 
   const recommendNext = () => setPage(prev => prev + 1)
 
-  const nextBook = () => setStep(prev => Math.min(prev + 1, maxStep))
-  const prevBook = () => setStep(prev => Math.max(prev - 1, 0))
+  const nextBook = () => {
+    setStep(prev => {
+      if (prev === maxSteps-1) return 0
+      else return prev + 1 
+    })
+  }
+  
+  const prevBook = () => {
+    setStep(prev => {
+      if (prev === 0) return maxSteps - 1
+      else return prev - 1
+    })
+  }
 
   return (
     <Box>
@@ -96,7 +107,7 @@ export default function BookPage({ params }: { params: { id: string } }) {
             onNextClick={nextBook}
             onBackClick={prevBook}
             title="Recommended Readings"
-            steps={maxStep}
+            steps={maxSteps}
             activeStep={step}
             header={
               <Box px={2}  py={1} display="flex" alignItems="center">

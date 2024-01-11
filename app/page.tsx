@@ -41,11 +41,33 @@ export default function Home() {
     fetchOffers()
   }, [])
 
-  const nextStep = () => setStep(prev => Math.min(prev + 1, maxSteps-1))
-  const prevStep = () => setStep(prev => Math.max(prev - 1, 0))
+  const nextStep = () => {
+    setStep(prev => {
+      if (prev === maxSteps-1) return 0
+      else return prev + 1 
+    })
+  }
+  
+  const prevStep = () => {
+    setStep(prev => {
+      if (prev === 0) return maxSteps - 1
+      else return prev - 1
+    })
+  }
 
-  const nextOffer = () => setStepOffer(prev => Math.min(prev + 1, maxStepsOffer-1))
-  const prevOffer = () => setStepOffer(prev => Math.max(prev - 1, 0))
+  const nextOffer = () => {
+    setStepOffer(prev => {
+      if (prev === maxStepsOffer-1) return 0
+      else return prev + 1 
+    })
+  }
+  
+  const prevOffer = () => {
+    setStepOffer(prev => {
+      if (prev === 0) return maxStepsOffer - 1
+      else return prev - 1
+    })
+  }
 
   return (
     <Box>
@@ -55,7 +77,7 @@ export default function Home() {
           {offers.length > 0 && 
           <Paper sx={{ overflow: "hidden", position: "relative", height: 300 }}>
             <IconButton onClick={prevOffer} sx={{ position: "absolute", left: 8, top: "50%", transform: "translateY(-50%)" }}>
-              <KeyboardArrowLeft color="action" />
+              <KeyboardArrowLeft fontSize="large" sx={{ color: "white" }} />
             </IconButton>
             <Box height="100%">
               <Box component="a" href={offers[stepOffer].href} height="100%" display="flex" alignItems="center" justifyContent="center">
@@ -63,10 +85,10 @@ export default function Home() {
               </Box>
             </Box>
             <IconButton onClick={nextOffer} sx={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)" }}>
-              <KeyboardArrowRight color="action" />
+              <KeyboardArrowRight fontSize="large" sx={{ color: "white" }} />
             </IconButton>
             <div className="absolute left-1/2 bottom-2 -translate-x-1/2 flex gap-1">
-              {Array(maxStepsOffer).fill(0).map((_, key) => <div key={key} className={`w-[6px] h-[6px] rounded bg-white ${key === stepOffer ? "opacity-100" : "opacity-50"}`} ></div>)}
+              {Array(maxStepsOffer).fill(0).map((_, key) => <div key={key} className={`w-[6px] h-[6px] rounded shadow bg-white ${key === stepOffer ? "opacity-100" : "opacity-50"}`} ></div>)}
             </div>
           </Paper>}
           <Paper sx={{overflow: "hidden"}}>
