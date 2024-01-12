@@ -1,5 +1,5 @@
 "use client"
-import { Box, Divider, Paper, Typography } from "@mui/material"
+import { Box, Button, Divider, Paper, Typography } from "@mui/material"
 import AppBar from "@/app/components/AppBar"
 import { useEffect, useState } from "react"
 import { Book } from "@prisma/client"
@@ -15,26 +15,50 @@ export default function CartPage() {
     }
     fetchCart()
   }, [])
+
+  const price = cart.reduce((ac, curr)=> ac + curr.original_price, 0)
+  const discount = cart.reduce((ac, curr)=> ac + (curr.original_price - curr.selling_price), 0)
+
   return (
     <Box>
       <AppBar />
       <Box display="flex" justifyContent="center">
-        <Box display="flex" flexDirection="column" width="100%" maxWidth={800} p={2} gap={2}>
+        <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }} width="100%" maxWidth={800} p={2} gap={2}>
           <Paper>
             <Box display="flex" flexDirection="column">
               <Box px={2} py={1}>
-                <Typography textTransform="uppercase" variant="h6">Cart (3)</Typography>
+                <Typography textTransform="uppercase" variant="h6">Cart ({cart.length})</Typography>
               </Box>
               <Divider />
               <Box display="flex" flexDirection="column">
-                { cart.map((book, key)=><CartItem key={key} {...book} />) }
+                { cart.map((book, key)=><CartItem lastItem={key === cart.length-1} key={key} {...book} />) }
               </Box>
             </Box>
           </Paper>
-          <Paper>
+          <Paper sx={{ height: "fit-content", minWidth: 300, position: "sticky", top: 80 }}>
             <Box>
               <Box px={2} py={1}>
                 <Typography textTransform="uppercase" variant="h6">Cart Info</Typography>
+              </Box>
+              <Divider />
+              <Box display="flex" flexDirection="column" p={1}>
+                <Box px={1} py={1} display="flex">
+                  <Typography flex={1}>Price</Typography>
+                  <Typography>${price}</Typography>
+                </Box>
+                <Box p={1} display="flex">
+                  <Typography flex={1}>Discount</Typography>
+                  <Typography color="green">${discount}</Typography>
+                </Box>
+                <Divider sx={{ my: 1 }}/>
+                <Box p={1} display="flex">
+                  <Typography fontWeight={500} flex={1}>Total Amount</Typography>
+                  <Typography fontWeight={500}>${price - discount}</Typography>
+                </Box>
+                <Divider sx={{ mt: 1 }}/>
+              </Box>
+              <Box display="flex" px={1} mb={1}>
+                <Button disableElevation variant="contained" sx={{ flex: 1 }}>Checkout</Button>
               </Box>
             </Box>
           </Paper>
