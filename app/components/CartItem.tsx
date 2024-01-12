@@ -8,7 +8,8 @@ export default function CartItem({
   categories,
   selling_price,
   original_price,
-}: Book) {
+  lastItem,
+}: Book & { lastItem: boolean }) {
   return (
     <>
       <Box display="flex" gap={2} p={2}>
@@ -33,7 +34,7 @@ export default function CartItem({
           </ButtonGroup>
         </Box>
       </Box>
-      <Divider />
+      {!lastItem && <Divider />}
     </>
   )
 }
