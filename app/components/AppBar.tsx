@@ -1,5 +1,5 @@
 import { AppBar as AppBarMUI, Toolbar, IconButton, Typography, Badge, Box, Input, Paper } from "@mui/material"
-import { AccountCircle, Menu, Search, ShoppingCart } from "@mui/icons-material"
+import { Menu, Search, ShoppingCart } from "@mui/icons-material"
 import { useSearchParams } from "next/navigation"
 import React, { useState } from "react"
 
@@ -30,13 +30,9 @@ export default function AppBar() {
           </Box>
           </Paper>
           <Box display="flex" gap={2}>
-            <IconButton edge="end" color="inherit">
+            <IconButton href="/cart" edge="end" color="inherit">
               <ShoppingCart />
-              <Badge color="error" badgeContent={0} sx={{ top: -5, left: -5 }} />
-            </IconButton>
-            <IconButton edge="end" color="inherit">
-              <AccountCircle />
-              <Badge color="error" badgeContent={0} sx={{ top: -5, left: -5 }} />
+              <Badge color="error" badgeContent={6} sx={{ top: -5, left: -5 }} />
             </IconButton>
           </Box>
         </Box>
