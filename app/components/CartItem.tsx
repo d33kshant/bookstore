@@ -1,8 +1,9 @@
 import { Add, Remove } from "@mui/icons-material";
-import { Box, Button, ButtonGroup, Divider, Typography } from "@mui/material";
+import { Box, Button, ButtonGroup, Divider, Paper, Typography } from "@mui/material";
 import { Book } from "@prisma/client";
 
 export default function CartItem({
+  id,
   title,
   thumbnail,
   categories,
@@ -13,9 +14,11 @@ export default function CartItem({
   return (
     <>
       <Box display="flex" gap={2} p={2}>
-        <img className="w-24 h-32 rounded object-cover" src={thumbnail} />
+        <a href={`/book/${id}`}>
+          <img className="w-24 object-cover rounded shadow-md" src={thumbnail} />
+        </a>
         <Box display="flex" flexDirection="column" gap={1}>
-          <Box>
+          <Box component="a" href={`/book/${id}`}>
             <Typography fontWeight={500} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical' }}>{title}</Typography>
             <Typography color="gray">{categories}</Typography>
           </Box>
