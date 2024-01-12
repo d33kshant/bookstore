@@ -11,7 +11,7 @@ export default function CartPage() {
     const fetchCart = async () => {
       const response = await fetch('/api/books/top')
       const data = await response.json()
-      if (data) setCart(data.books)
+      if (data) setCart(data.books.splice(0, 6))
     }
     fetchCart()
   }, [])
@@ -23,8 +23,8 @@ export default function CartPage() {
     <Box>
       <AppBar />
       <Box display="flex" justifyContent="center">
-        <Box sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }} width="100%" maxWidth={800} p={2} gap={2}>
-          <Paper>
+        <Box display="flex" sx={{ flexDirection: { xs: "column", sm: "row" } }} width="100%" maxWidth={800} p={2} gap={2}>
+          <Paper sx={{ flex: 1 }}>
             <Box display="flex" flexDirection="column">
               <Box px={2} py={1}>
                 <Typography textTransform="uppercase" variant="h6">Cart ({cart.length})</Typography>
@@ -52,8 +52,8 @@ export default function CartPage() {
                 </Box>
                 <Divider sx={{ my: 1 }}/>
                 <Box p={1} display="flex">
-                  <Typography fontWeight={500} flex={1}>Total Amount</Typography>
-                  <Typography fontWeight={500}>${price - discount}</Typography>
+                  <Typography variant="h6" fontWeight={500} flex={1}>Total Amount</Typography>
+                  <Typography variant="h6" fontWeight={500}>${price - discount}</Typography>
                 </Box>
                 <Divider sx={{ mt: 1 }}/>
               </Box>
