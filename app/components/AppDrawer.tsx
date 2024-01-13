@@ -57,6 +57,7 @@ export default function AppDrawer({ open, onClose, onOpen }: Props) {
             <ListItemText primary="Low Price" />
           </ListItemButton>
         </List>
+        <Divider />
         <List
           subheader={
             <ListSubheader>About</ListSubheader>
