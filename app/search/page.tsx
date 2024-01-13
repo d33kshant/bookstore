@@ -55,10 +55,12 @@ export default function SearchPage() {
             <Typography fontWeight={500} flex={1}>{match} Items Found</Typography>
             <FormControl sx={{minWidth: 200}} size="small">
               <Select value={sort} onChange={onSortChange}>
-                <MenuItem value="average_rating-desc">Rating High to Low</MenuItem>
-                <MenuItem value="average_rating-asc">Rating Low to High</MenuItem>
-                <MenuItem value="selling_price-desc">Price High to Low</MenuItem>
-                <MenuItem value="selling_price-asc">Price Low to High</MenuItem>
+                <MenuItem value="average_rating-desc">Rating: High to Low</MenuItem>
+                <MenuItem value="average_rating-asc">Rating: Low to High</MenuItem>
+                <MenuItem value="published_year-desc">Release: Latest First</MenuItem>
+                <MenuItem value="published_year-asc">Release: Oldest First</MenuItem>
+                <MenuItem value="selling_price-desc">Price: High to Low</MenuItem>
+                <MenuItem value="selling_price-asc">Price: Low to High</MenuItem>
               </Select>
             </FormControl>
           </Box>
