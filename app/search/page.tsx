@@ -47,9 +47,8 @@ export default function SearchPage() {
   }
 
   return (
-    <Box>
-      <AppBar />
-      <Box alignItems="center" padding={2} gap={2} margin="auto" sx={{ display: "flex", flexDirection: "column", maxWidth: 800, width: "100%", height: "100%" }}>
+    <Box  width="100%">
+      <Box width="100%" alignItems="center" gap={2} margin="auto" sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
         <Paper sx={{ width: "100%" }}>
           <Box display="flex" p={1} gap={1} alignItems="center">
             <Typography fontWeight={500} flex={1}>{match} Items Found</Typography>

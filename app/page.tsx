@@ -1,11 +1,9 @@
 "use client"
 import { Box, Divider, IconButton, Paper, Typography } from "@mui/material"
 import { BookmarkAddOutlined, KeyboardArrowLeft, KeyboardArrowRight, Star } from "@mui/icons-material"
-import AppBar from "@/app/components/AppBar"
 import { useEffect, useState } from "react"
 import { Book, Offer } from "@prisma/client"
 import Carousel from "@/app/components/Carousel"
-import AppDrawer from "@/app/components/AppDrawer"
 
 export default function Home() {
   const [step, setStep] = useState(0)
@@ -15,8 +13,6 @@ export default function Home() {
   const [stepOffer, setStepOffer] = useState(0)
   const [maxStepsOffer, setMaxStepsOffer] = useState(1)
   const [offers, setOffers] = useState<Offer[]>([])
-
-  const [draweOpen, setDrawerOpen] = useState(false)
 
   useEffect(() => {
     const fetchTopBooks = async () => {
@@ -46,11 +42,11 @@ export default function Home() {
 
   const nextStep = () => {
     setStep(prev => {
-      if (prev === maxSteps-1) return 0
-      else return prev + 1 
+      if (prev === maxSteps - 1) return 0
+      else return prev + 1
     })
   }
-  
+
   const prevStep = () => {
     setStep(prev => {
       if (prev === 0) return maxSteps - 1
@@ -60,11 +56,11 @@ export default function Home() {
 
   const nextOffer = () => {
     setStepOffer(prev => {
-      if (prev === maxStepsOffer-1) return 0
-      else return prev + 1 
+      if (prev === maxStepsOffer - 1) return 0
+      else return prev + 1
     })
   }
-  
+
   const prevOffer = () => {
     setStepOffer(prev => {
       if (prev === 0) return maxStepsOffer - 1
@@ -72,17 +68,10 @@ export default function Home() {
     })
   }
 
-  const onMenuClick = () => setDrawerOpen(prev => !prev)
-  const onDrawerClose = () => setDrawerOpen(false)
-  const onDrawerOpen = () => setDrawerOpen(true)
-
   return (
-    <Box>
-      <AppBar onMenuClick={onMenuClick} />
-      <AppDrawer open={draweOpen} onOpen={onDrawerOpen} onClose={onDrawerClose} />
-      <Box display="flex" justifyContent="center">
-        <Box width="100%" maxWidth={800} display="flex" flexDirection="column" p={2} gap={2}>
-          {offers.length > 0 && 
+    <Box width="100%" display="flex" justifyContent="center">
+      <Box width="100%" display="flex" flexDirection="column" gap={2}>
+        {offers.length > 0 &&
           <Paper sx={{ overflow: "hidden", position: "relative", height: 300 }}>
             <IconButton onClick={prevOffer} sx={{ position: "absolute", left: 8, top: "50%", transform: "translateY(-50%)" }}>
               <KeyboardArrowLeft fontSize="large" sx={{ color: "white" }} />
@@ -99,42 +88,41 @@ export default function Home() {
               {Array(maxStepsOffer).fill(0).map((_, key) => <div key={key} className={`w-[6px] h-[6px] rounded shadow bg-white ${key === stepOffer ? "opacity-100" : "opacity-50"}`} ></div>)}
             </div>
           </Paper>}
-          <Paper sx={{overflow: "hidden"}}>
+        <Paper sx={{ overflow: "hidden" }}>
+          <Box>
+            <Box py={1} px={2}>
+              <Typography variant="h6" textTransform="uppercase">For You</Typography>
+            </Box>
+            <Divider />
+            <Box height={300} gap={2} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
+              <BookmarkAddOutlined color="action" fontSize="large" />
+              <Typography textAlign="center" maxWidth={210} color="gray">Add or purchase some book to get recommendation</Typography>
+            </Box>
+          </Box>
+        </Paper>
+        {topBooks.length > 0 && <Carousel title="Top Readings" steps={maxSteps} activeStep={step} onBackClick={prevStep} onNextClick={nextStep}>
+          <Box component="a" href={`/book/${topBooks[step].id}`} height="100%" display="flex" flexDirection="column" textAlign="center" justifyContent="center" alignItems="center" gap={2}>
+            <Paper sx={{ overflow: "hidden" }}>
+              <img className="w-fit h-40" src={topBooks[step].thumbnail} alt={topBooks[step].title} />
+            </Paper>
             <Box>
-              <Box py={1} px={2}>
-                <Typography variant="h6" textTransform="uppercase">For You</Typography>
-              </Box>
-              <Divider />
-              <Box height={300} gap={2} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-                <BookmarkAddOutlined color="action" fontSize="large" />
-                <Typography textAlign="center" maxWidth={210} color="gray">Add or purchase some book to get recommendation</Typography>
-              </Box>
+              <Typography fontWeight={500}>{topBooks[step].title}</Typography>
+              <Typography color="gray">{topBooks[step].categories}</Typography>
             </Box>
-          </Paper>
-          {topBooks.length > 0 && <Carousel title="Top Readings" steps={maxSteps} activeStep={step} onBackClick={prevStep} onNextClick={nextStep}>
-            <Box component="a" href={`/book/${topBooks[step].id}`} height="100%" display="flex" flexDirection="column" textAlign="center" justifyContent="center" alignItems="center" gap={2}>
-              <Paper sx={{ overflow: "hidden" }}>
-                <img className="w-fit h-40" src={topBooks[step].thumbnail} alt={topBooks[step].title} />
-              </Paper>
-              <Box>
-                <Typography fontWeight={500}>{topBooks[step].title}</Typography>
-                <Typography color="gray">{topBooks[step].categories}</Typography>
-              </Box>
-              <Box color="gray" display="flex" gap={1}>
-                <Star fontSize="small" color="action" />
-                <Typography color="inherit">{topBooks[step].average_rating}</Typography>
-                <Typography color="inherit">({topBooks[step].ratings_count})</Typography>
-              </Box>
+            <Box color="gray" display="flex" gap={1}>
+              <Star fontSize="small" color="action" />
+              <Typography color="inherit">{topBooks[step].average_rating}</Typography>
+              <Typography color="inherit">({topBooks[step].ratings_count})</Typography>
             </Box>
-          </Carousel>}
-          <Paper>
-            <Box href="/search" component="a" display="flex" p={2}>
-              <Typography fontWeight={500} flex={1}>Explore all books</Typography>
-              <KeyboardArrowRight color="action" />
-            </Box>
-          </Paper>
-        </Box>
+          </Box>
+        </Carousel>}
+        <Paper>
+          <Box href="/search" component="a" display="flex" p={2}>
+            <Typography fontWeight={500} flex={1}>Explore all books</Typography>
+            <KeyboardArrowRight color="action" />
+          </Box>
+        </Paper>
       </Box>
     </Box>
-  )    
+  )
 }
