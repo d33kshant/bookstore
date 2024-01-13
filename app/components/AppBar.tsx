@@ -3,7 +3,11 @@ import { Menu, Search, ShoppingCart } from "@mui/icons-material"
 import { useSearchParams } from "next/navigation"
 import React, { useState } from "react"
 
-export default function AppBar() {
+interface Props {
+  onMenuClick?: ()=>void,
+}
+
+export default function AppBar({ onMenuClick }: Props) {
   const params = useSearchParams()
   const [query, setQuery] = useState(params.get("query") || '')
 
@@ -16,7 +20,7 @@ export default function AppBar() {
       <Toolbar>
         <Box width="100%" display="flex" justifyContent="space-between" alignItems="center">
           <Box display="flex" alignItems="center">
-            <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 1 }}>
+            <IconButton onClick={onMenuClick} edge="start" color="inherit" aria-label="menu" sx={{ mr: 1 }}>
               <Menu />
             </IconButton>
             <Typography variant="h6" color="inherit" component="div" sx={{ flexGrow: 1 }}>

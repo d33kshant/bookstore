@@ -1,10 +1,11 @@
 "use client"
-import { Box, Divider, IconButton, MobileStepper, Paper, Rating, Typography, ratingClasses } from "@mui/material"
+import { Box, Divider, IconButton, Paper, Typography } from "@mui/material"
 import { BookmarkAddOutlined, KeyboardArrowLeft, KeyboardArrowRight, Star } from "@mui/icons-material"
 import AppBar from "@/app/components/AppBar"
 import { useEffect, useState } from "react"
 import { Book, Offer } from "@prisma/client"
-import Carousel from "./components/Carousel"
+import Carousel from "@/app/components/Carousel"
+import AppDrawer from "@/app/components/AppDrawer"
 
 export default function Home() {
   const [step, setStep] = useState(0)
@@ -14,6 +15,8 @@ export default function Home() {
   const [stepOffer, setStepOffer] = useState(0)
   const [maxStepsOffer, setMaxStepsOffer] = useState(1)
   const [offers, setOffers] = useState<Offer[]>([])
+
+  const [draweOpen, setDrawerOpen] = useState(false)
 
   useEffect(() => {
     const fetchTopBooks = async () => {
@@ -69,9 +72,14 @@ export default function Home() {
     })
   }
 
+  const onMenuClick = () => setDrawerOpen(prev => !prev)
+  const onDrawerClose = () => setDrawerOpen(false)
+  const onDrawerOpen = () => setDrawerOpen(true)
+
   return (
     <Box>
-      <AppBar />
+      <AppBar onMenuClick={onMenuClick} />
+      <AppDrawer open={draweOpen} onOpen={onDrawerOpen} onClose={onDrawerClose} />
       <Box display="flex" justifyContent="center">
         <Box width="100%" maxWidth={800} display="flex" flexDirection="column" p={2} gap={2}>
           {offers.length > 0 && 
