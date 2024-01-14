@@ -2,17 +2,22 @@
 
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter"
 import { Box } from '@mui/material'
-import { useState } from 'react'
+import { useReducer, useState } from 'react'
 import AppBar from '@/app/components/AppBar'
 import AppDrawer from '@/app/components/AppDrawer'
+import { CartInit, CartReducer } from "@/app/reducers/CartReducer"
 
 import './globals.css'
+import { CartProvider } from "./contexts/CartContext"
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+
+  const [ state, dispatch ] = useReducer(CartReducer, { cart: [] }, CartInit)
+
   const [draweOpen, setDrawerOpen] = useState(false)
 
   const onMenuClick = () => setDrawerOpen(prev => !prev)
@@ -26,6 +31,7 @@ export default function RootLayout({
       </head>
       <body>
         <AppRouterCacheProvider>
+          <CartProvider value={{ state, dispatch }}>
           <Box>
             <AppBar onMenuClick={onMenuClick} />
             <AppDrawer open={draweOpen} onOpen={onDrawerOpen} onClose={onDrawerClose} />
@@ -35,6 +41,7 @@ export default function RootLayout({
               </Box>
             </Box>
           </Box>
+          </CartProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
