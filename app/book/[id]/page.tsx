@@ -2,12 +2,16 @@
 
 import { Box, Button, Chip, Divider, IconButton, Paper, Rating, Typography } from "@mui/material";
 import AppBar from "@/app/components/AppBar";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Book } from "@prisma/client";
 import { AddShoppingCart, BookmarkAddOutlined, Refresh, Star } from "@mui/icons-material";
 import Carousel from "@/app/components/Carousel";
+import { CartContext } from "@/app/contexts/CartContext";
+import { CartActionType } from "@/app/reducers/CartReducer";
 
 export default function BookPage({ params }: { params: { id: string } }) {
+
+  const { dispatch } = useContext(CartContext)
 
   const [book, setBook] = useState<Book | null>(null)
 
@@ -63,6 +67,10 @@ export default function BookPage({ params }: { params: { id: string } }) {
     })
   }
 
+  const addToCart = () => {
+    dispatch({ type: CartActionType.ADD, payload: { ...book } })
+  }
+
   return (
     <Box display="flex" flexDirection="column" width="100%" gap={2}>
       <Paper>
@@ -78,7 +86,7 @@ export default function BookPage({ params }: { params: { id: string } }) {
             </Box>
             <Box display="flex" gap={1}>
               <Button variant="contained" color="success" startIcon={<BookmarkAddOutlined />}>Save For Later</Button>
-              <Button variant="contained" color="secondary" startIcon={<AddShoppingCart />}>Add To Cart</Button>
+              <Button onClick={addToCart} variant="contained" color="secondary" startIcon={<AddShoppingCart />}>Add To Cart</Button>
             </Box>
           </Box>
           <Divider />

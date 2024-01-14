@@ -1,22 +1,20 @@
 "use client"
 import { Box, Button, Divider, Paper, Typography } from "@mui/material"
-import { useEffect, useState } from "react"
-import { Book } from "@prisma/client"
+import { useContext } from "react"
 import CartItem from "@/app/components/CartItem"
+import { CartContext } from "@/app/contexts/CartContext"
+import { CartActionType } from "../reducers/CartReducer"
 
 export default function CartPage() {
-  const [cart, setCart] = useState<Book[]>([])
-  useEffect(() => {
-    const fetchCart = async () => {
-      const response = await fetch('/api/books/top')
-      const data = await response.json()
-      if (data) setCart(data.books.splice(0, 6))
-    }
-    fetchCart()
-  }, [])
+  const { state: { cart }, dispatch } = useContext(CartContext)
 
-  const price = cart.reduce((ac, curr) => ac + curr.original_price, 0)
-  const discount = cart.reduce((ac, curr) => ac + (curr.original_price - curr.selling_price), 0)
+  const price = cart.reduce((ac, curr) => ac + curr.original_price * curr.count, 0)
+  const discount = cart.reduce((ac, curr) => ac + (curr.original_price - curr.selling_price) * curr.count, 0)
+
+  const checkOut = () => {
+    alert(`You have to pay ${price-discount} and you saved ${discount} on shoping of ${price}`)
+    dispatch({ type: CartActionType.CLR, payload: null })
+  }
 
   return (
     <Box display="flex" width="100%" sx={{ flexDirection: { xs: "column", sm: "row" } }} gap={2}>
@@ -54,7 +52,7 @@ export default function CartPage() {
             <Divider sx={{ mt: 1 }} />
           </Box>
           <Box display="flex" px={1} mb={1}>
-            <Button disableElevation variant="contained" sx={{ flex: 1 }}>Checkout</Button>
+            <Button onClick={checkOut} disableElevation variant="contained" sx={{ flex: 1 }}>Checkout</Button>
           </Box>
         </Box>
       </Paper>

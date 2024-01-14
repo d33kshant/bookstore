@@ -1,6 +1,9 @@
-import { Add, Remove } from "@mui/icons-material";
+import { Add, Clear, Remove } from "@mui/icons-material";
 import { Box, Button, ButtonGroup, Divider, Paper, Typography } from "@mui/material";
 import { Book } from "@prisma/client";
+import { useContext } from "react";
+import { CartContext } from "../contexts/CartContext";
+import { CartActionType } from "../reducers/CartReducer";
 
 export default function CartItem({
   id,
@@ -10,31 +13,40 @@ export default function CartItem({
   selling_price,
   original_price,
   lastItem,
-}: Book & { lastItem: boolean }) {
+  count,
+}: Book & { count: number, lastItem: boolean }) {
+  const { dispatch } = useContext(CartContext)
   return (
     <>
       <Box display="flex" gap={2} p={2}>
-        <a href={`/book/${id}`}>
-          <img className="w-24 object-cover rounded shadow-md" src={thumbnail} />
-        </a>
-        <Box display="flex" flexDirection="column" gap={1}>
+        <Paper>
+          <a href={`/book/${id}`}>
+            <img className="w-24 h-full object-cover rounded" src={thumbnail} />
+          </a>
+        </Paper>
+        <Box width="100%" display="flex" flexDirection="column" gap={1}>
           <Box component="a" href={`/book/${id}`}>
             <Typography fontWeight={500} sx={{ overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical' }}>{title}</Typography>
             <Typography color="gray">{categories}</Typography>
           </Box>
           <Box display="flex" alignItems="center" gap={1}>
-            { selling_price !== original_price && <Typography sx={{ textDecoration: "line-through" }} color="gray">${original_price}</Typography> }
+            {selling_price !== original_price && <Typography sx={{ textDecoration: "line-through" }} color="gray">${original_price}</Typography>}
             <Typography flex={1} fontWeight={500}>${selling_price}</Typography>
           </Box>
-          <ButtonGroup sx={{ mt: "auto" }} size="small">
-            <Button>
-              <Add fontSize="small" />
+          <Box display="flex">
+            <ButtonGroup sx={{ flex: 1, mt: "auto" }} size="small">
+              <Button onClick={() => { dispatch({ type: CartActionType.ADD, payload: { id } }) }}>
+                <Add fontSize="small" />
+              </Button>
+              <Button disableTouchRipple disableRipple disableFocusRipple disableElevation>{count}</Button>
+              <Button onClick={() => { dispatch({ type: CartActionType.REM, payload: { id } }) }} >
+                <Remove fontSize="small" />
+              </Button>
+            </ButtonGroup>
+            <Button onClick={() => { dispatch({ type: CartActionType.DEL, payload: { id } }) }} color="error" size="small" variant="outlined">
+              <Clear fontSize="small" />
             </Button>
-            <Button disableTouchRipple disableRipple disableFocusRipple disableElevation>1</Button>
-            <Button>
-              <Remove fontSize="small" />
-            </Button>
-          </ButtonGroup>
+          </Box>
         </Box>
       </Box>
       {!lastItem && <Divider />}
