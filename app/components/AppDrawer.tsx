@@ -1,4 +1,4 @@
-import { CreditCard, EventNote, Home, LocalAtm, MenuBook, MonetizationOn, Search, Star, StarHalf, Stars, ThumbsUpDown } from "@mui/icons-material";
+import { EventNote, Home, LocalAtm, MenuBook, Search, ShoppingCart, Stars } from "@mui/icons-material";
 import { Box, Divider, Drawer, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader, SwipeableDrawer, Toolbar, Typography } from "@mui/material";
 
 interface Props {
@@ -13,13 +13,13 @@ export default function AppDrawer({ open, onClose, onOpen }: Props) {
       <Box minWidth={300}>
         <Toolbar />
         <List>
-          <ListItemButton>
+          <ListItemButton href="/">
             <ListItemIcon>
               <Home />
             </ListItemIcon>
             <ListItemText primary="Home" />
           </ListItemButton>
-          <ListItemButton>
+          <ListItemButton href="/search">
             <ListItemIcon>
               <Search />
             </ListItemIcon>
@@ -65,9 +65,9 @@ export default function AppDrawer({ open, onClose, onOpen }: Props) {
         >
           <Box px={2} maxWidth={280}>
             <Typography variant="body2">
-              BookStore is an online book store where you can buy books and get recommendation for new readings. This is a dummy website you can not realy buy books from here.
+              BookStore is an online book store where you can buy books and get recommendation for new readings. This is a dummy website you can not buy books from here. 😛
             </Typography>
-            <Typography color="royalblue" variant="caption" component="a" href="https://github.com/d33kshant/bookstore">GitHub Repository</Typography>
+            <Typography target="_blank" sx={{ textDecoration: "underline" }} color="royalblue" variant="body2" component="a" href="https://github.com/d33kshant/bookstore">GitHub Repository ↗</Typography>
           </Box>
         </List>
       </Box>
