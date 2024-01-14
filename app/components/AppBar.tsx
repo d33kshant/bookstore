@@ -1,13 +1,17 @@
 import { AppBar as AppBarMUI, Toolbar, IconButton, Typography, Badge, Box, Input, Paper } from "@mui/material"
 import { Menu, Search, ShoppingCart } from "@mui/icons-material"
 import { useSearchParams } from "next/navigation"
-import React, { useState } from "react"
+import React, { useContext, useState } from "react"
+import { CartContext } from "../contexts/CartContext"
 
 interface Props {
   onMenuClick?: ()=>void,
 }
 
 export default function AppBar({ onMenuClick }: Props) {
+
+  const { state } = useContext(CartContext)
+
   const params = useSearchParams()
   const [query, setQuery] = useState(params.get("query") || '')
 
@@ -36,7 +40,7 @@ export default function AppBar({ onMenuClick }: Props) {
           <Box display="flex" gap={2}>
             <IconButton href="/cart" edge="end" color="inherit">
               <ShoppingCart />
-              <Badge color="error" badgeContent={6} sx={{ top: -5, left: -5 }} />
+              <Badge color="error" badgeContent={state.cart.length} sx={{ top: -5, left: -5 }} />
             </IconButton>
           </Box>
         </Box>
