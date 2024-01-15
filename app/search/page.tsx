@@ -1,15 +1,14 @@
 "use client"
 import React, { useEffect, useState } from "react"
-import { Box, Pagination, Grid, Paper, Input, Select, MenuItem, SelectChangeEvent, FormControl, InputLabel, Typography } from "@mui/material"
+import { Box, Pagination, Grid, Paper, Select, MenuItem, SelectChangeEvent, FormControl, Typography, Skeleton, CircularProgress } from "@mui/material"
 import BookCard from "@/app/components/BookCard"
-import AppBar from "@/app/components/AppBar"
 import { Book } from "@prisma/client"
 import { useQueryState } from 'nuqs'
 import { useSearchParams } from "next/navigation"
 
 export default function SearchPage() {
   const params = useSearchParams()
-  const [books, setBooks] = useState<Book[]>([])
+  const [books, setBooks] = useState<Book[] | null>(null)
   const [count, setCount] = useState(1)
   const [match, setMatch] = useState(0)
   const [page, setPage] = useQueryState('page', { defaultValue: '1' })
@@ -43,17 +42,18 @@ export default function SearchPage() {
 
   const onSortChange = (event: SelectChangeEvent) => {
     setPage('1')
+    setBooks(null)
     setSort(event.target.value)
   }
 
   return (
-    <Box  width="100%">
+    <Box width="100%">
       <Box width="100%" alignItems="center" gap={2} margin="auto" sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
         <Paper sx={{ width: "100%" }}>
           <Box display="flex" p={1} gap={1} alignItems="center">
             <Typography fontWeight={500} flex={1}>{match} Items Found</Typography>
-            <FormControl sx={{minWidth: 200}} size="small">
-              <Select value={sort} onChange={onSortChange}>
+            <FormControl sx={{ minWidth: 200 }} size="small">
+              <Select value={sort || "average_rating-desc"} onChange={onSortChange}>
                 <MenuItem value="average_rating-desc">Rating: High to Low</MenuItem>
                 <MenuItem value="average_rating-asc">Rating: Low to High</MenuItem>
                 <MenuItem value="published_year-desc">Release: Latest First</MenuItem>
@@ -64,13 +64,22 @@ export default function SearchPage() {
             </FormControl>
           </Box>
         </Paper>
-        <Grid container spacing={2} sx={{ height: "100%" }}>
-          {books.map(book => <BookCard key={book.id} {...book} />)}
-        </Grid>
+        {books === null ?
+          <Box height={300} display="flex" flexDirection="column" justifyContent="center" alignItems="center" gap={2}>
+            <CircularProgress />
+            <Typography>Loading Results ...</Typography>
+          </Box> :
+          books.length <= 0 ?
+            <Box>
+              No Result
+            </Box> :
+            <Grid container rowSpacing={0} columnSpacing={2} sx={{ height: "100%" }}>
+              {books.map(book => <BookCard key={book.id} {...book} />)}
+            </Grid>}
       </Box>
-      <Box p={1} pb={4} display="flex" justifyContent="center">
+      {books && count > 1 && <Box p={1} pb={4} display="flex" justifyContent="center">
         <Pagination count={count} page={+page} color="primary" onChange={onPageChange} />
-      </Box>
+      </Box>}
     </Box>
   )
 }
