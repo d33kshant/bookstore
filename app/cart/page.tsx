@@ -5,6 +5,7 @@ import CartItem from "@/app/components/CartItem"
 import { CartContext } from "@/app/contexts/CartContext"
 import { CartActionType } from "../reducers/CartReducer"
 import { ToastContext } from "../contexts/ToastContext"
+import { AddShoppingCartOutlined } from "@mui/icons-material"
 
 export default function CartPage() {
   const { state: { cart }, dispatch } = useContext(CartContext)
@@ -16,6 +17,22 @@ export default function CartPage() {
   const checkOut = () => {
     toast(`Books of $${price-discount} checked out`, "success")
     dispatch({ type: CartActionType.CLR, payload: null })
+  }
+
+  if (cart.length <= 0) {
+    return (
+      <Box display="flex" width="100%">
+        <Paper sx={{ width: "100%" }}>
+          <Box height={300} gap={2} display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+            <AddShoppingCartOutlined fontSize="large" color="action"/>
+            <Box display="flex" flexDirection="column" alignItems="center">
+              <Typography color="gray">Your cart is empty</Typography>
+              <Typography color="royalblue" component="a" href="/search">Explore Books</Typography>
+            </Box>
+          </Box>
+        </Paper>
+      </Box>
+    )
   }
 
   return (
