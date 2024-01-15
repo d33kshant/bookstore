@@ -9,11 +9,12 @@ interface Props {
   activeStep: number,
   children: React.ReactNode,
   header?: React.ReactNode,
+  disable?: boolean,
   onNextClick: ()=>void,
   onBackClick: ()=>void,
 }
 
-export default function Carousel({ title, steps, activeStep, header, children, onNextClick, onBackClick }: Props) {
+export default function Carousel({ title, steps, activeStep, header, disable, children, onNextClick, onBackClick }: Props) {
   return (
     <Paper sx={{ overflow: "hidden" }}>
       <Box>
@@ -30,15 +31,15 @@ export default function Carousel({ title, steps, activeStep, header, children, o
         <MobileStepper
           variant="dots"
           position="static"
-          steps={steps}
-          activeStep={activeStep}
+          steps={disable ? 0 : steps}
+          activeStep={disable ? -1 : activeStep}
           nextButton={
-            <IconButton onClick={onNextClick}>
+            <IconButton disabled={disable} onClick={onNextClick}>
               <KeyboardArrowRight />
             </IconButton>
           }
           backButton={
-            <IconButton onClick={onBackClick}>
+            <IconButton disabled={disable} onClick={onBackClick}>
               <KeyboardArrowLeft />
             </IconButton>
           }

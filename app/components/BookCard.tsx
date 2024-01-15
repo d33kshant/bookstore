@@ -8,7 +8,6 @@ export default function BookCard({
   thumbnail,
   categories,
   average_rating,
-  ratings_count,
   selling_price,
   original_price,
 }: Book) {
@@ -26,7 +25,7 @@ export default function BookCard({
             <Typography flex={1} fontWeight={500}>${selling_price}</Typography>
             <Box display="flex" alignItems="center" gap={0.5}>
               <Star fontSize="small" color="action" sx={{ mb: 0.3 }}/>
-              <Typography color="gray">{average_rating.toFixed(1)} ({ratings_count > 999 ? "999+" : ratings_count})</Typography>
+              <Typography color="gray">{average_rating.toFixed(1)}</Typography>
             </Box>
           </Box>
         </Box>
