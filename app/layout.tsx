@@ -1,7 +1,7 @@
 "use client"
 
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter"
-import { Box } from '@mui/material'
+import { Alert, Box, Snackbar } from '@mui/material'
 import { useReducer, useState } from 'react'
 import AppBar from '@/app/components/AppBar'
 import AppDrawer from '@/app/components/AppDrawer'
@@ -9,6 +9,7 @@ import { CartInit, CartReducer } from "@/app/reducers/CartReducer"
 
 import './globals.css'
 import { CartProvider } from "./contexts/CartContext"
+import { ToastProvider, ToastType } from "./contexts/ToastContext"
 
 export default function RootLayout({
   children,
@@ -18,11 +19,23 @@ export default function RootLayout({
 
   const [ state, dispatch ] = useReducer(CartReducer, { cart: [] }, CartInit)
 
-  const [draweOpen, setDrawerOpen] = useState(false)
+  const [toastOpen, setToastOpen] = useState(false)
+  const [toast, setToast] = useState<{ message: string, kind: ToastType } | null>(null)
+
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   const onMenuClick = () => setDrawerOpen(prev => !prev)
   const onDrawerClose = () => setDrawerOpen(false)
   const onDrawerOpen = () => setDrawerOpen(true)
+
+  const showToast = (message: string, kind: ToastType = "info") => {
+    setToast({ message, kind })
+    setToastOpen(true)
+  }
+
+  const closeToast = () => {
+    setToastOpen(false)
+  }
 
   return (
     <html lang="en">
@@ -34,12 +47,17 @@ export default function RootLayout({
           <CartProvider value={{ state, dispatch }}>
           <Box>
             <AppBar onMenuClick={onMenuClick} />
-            <AppDrawer open={draweOpen} onOpen={onDrawerOpen} onClose={onDrawerClose} />
-            <Box display="flex" justifyContent="center">
-              <Box width="100%" maxWidth={800} display="flex" flexDirection="column" p={2} gap={2}>
-                {children}
+            <AppDrawer open={drawerOpen} onOpen={onDrawerOpen} onClose={onDrawerClose} />
+            <ToastProvider value={{ toast: showToast }}>
+              <Box display="flex" justifyContent="center">
+                <Box width="100%" maxWidth={800} display="flex" flexDirection="column" p={2} gap={2}>
+                  {children}
+                </Box>
               </Box>
-            </Box>
+            </ToastProvider>
+            <Snackbar anchorOrigin={{ vertical: "bottom", horizontal: "center" }} open={toastOpen} onClose={closeToast} autoHideDuration={5000}>
+              {<Alert variant="filled" onClose={closeToast} severity={toast?.kind || "info"}>{toast?.message || ''}</Alert>}
+            </Snackbar>
           </Box>
           </CartProvider>
         </AppRouterCacheProvider>

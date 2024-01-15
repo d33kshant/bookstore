@@ -7,10 +7,12 @@ import { AddShoppingCart, BookmarkAddOutlined, Refresh, Star } from "@mui/icons-
 import { CartContext } from "@/app/contexts/CartContext"
 import { CartActionType } from "@/app/reducers/CartReducer"
 import Carousel from "@/app/components/Carousel"
+import { ToastContext } from "@/app/contexts/ToastContext"
 
 export default function BookPage({ params }: { params: { id: string } }) {
 
   const { dispatch } = useContext(CartContext)
+  const { toast } = useContext(ToastContext)
 
   const [book, setBook] = useState<Book | null>(null)
 
@@ -68,6 +70,7 @@ export default function BookPage({ params }: { params: { id: string } }) {
 
   const addToCart = () => {
     dispatch({ type: CartActionType.ADD, payload: { ...book } })
+    toast("Book added to cart", "success")
   }
 
   return (

@@ -4,15 +4,17 @@ import { useContext } from "react"
 import CartItem from "@/app/components/CartItem"
 import { CartContext } from "@/app/contexts/CartContext"
 import { CartActionType } from "../reducers/CartReducer"
+import { ToastContext } from "../contexts/ToastContext"
 
 export default function CartPage() {
   const { state: { cart }, dispatch } = useContext(CartContext)
+  const { toast } = useContext(ToastContext)
 
   const price = cart.reduce((ac, curr) => ac + curr.original_price * curr.count, 0)
   const discount = cart.reduce((ac, curr) => ac + (curr.original_price - curr.selling_price) * curr.count, 0)
 
   const checkOut = () => {
-    alert(`You have to pay ${price-discount} and you saved ${discount} on shoping of ${price}`)
+    toast(`Books of $${price-discount} checked out`, "success")
     dispatch({ type: CartActionType.CLR, payload: null })
   }
 
