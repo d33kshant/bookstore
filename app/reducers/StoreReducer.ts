@@ -3,34 +3,37 @@ import { Book } from "@prisma/client"
 
 type CartItem = Book & { count: number }
 
-interface CartState {
+interface Store {
   cart: CartItem[],
+  readings: Book[],
 }
 
-export enum CartActionType {
-  ADD,
-  REM,
-  DEL,
-  CLR,
+export enum StoreActionType {
+  CART_ADD,
+  CART_REM,
+  CART_DEL,
+  CART_CLR,
+  READ_ADD,
+  READ_REM,
 }
 
-export interface CartAction {
-  type: CartActionType,
+export interface StoreAction {
+  type: StoreActionType,
   payload: any,
 }
 
-export function CartInit(): { cart: CartItem[] } {
+export function StoreInit(): Store {
   if (typeof window !== 'undefined') {
     const data = window.localStorage.getItem('state')
-    return data ? JSON.parse(data) : { cart: [] }
+    return data ? JSON.parse(data) : { cart: [], readings: [] }
   } else {
-    return { cart: [] }
+    return { cart: [], readings: [] }
   }
 }
 
-export function CartReducer(state: CartState, action: CartAction) {
+export function StoreReducer(state: Store, action: StoreAction) {
   switch (action.type) {
-    case CartActionType.ADD: {
+    case StoreActionType.CART_ADD: {
       const newState = { ...state }
       const index = newState.cart.findIndex(item => item.id === action.payload.id)
       if (index >= 0) {
@@ -43,7 +46,7 @@ export function CartReducer(state: CartState, action: CartAction) {
         return newState
       }
     }
-    case CartActionType.REM: {
+    case StoreActionType.CART_REM: {
       const newState = { ...state }
       const index = newState.cart.findIndex(item => item.id === action.payload.id)
       if (index >= 0) {
@@ -61,7 +64,7 @@ export function CartReducer(state: CartState, action: CartAction) {
         return newState
       }
     }
-    case CartActionType.DEL: {
+    case StoreActionType.CART_DEL: {
       const newState = { ...state }
       const index = newState.cart.findIndex(item => item.id === action.payload.id)
       if (index >= 0) {
@@ -73,10 +76,34 @@ export function CartReducer(state: CartState, action: CartAction) {
         return newState
       }
     }
-    case CartActionType.CLR: {
+    case StoreActionType.CART_CLR: {
       const newState = { ...state, cart: [] }
       window.localStorage.setItem('state', JSON.stringify(newState))
       return newState
+    }
+    case StoreActionType.READ_ADD: {
+      const newState = { ...state }
+      const index = newState.readings.findIndex(item => item.id === action.payload.id)
+      if (index >= 0) {
+        window.localStorage.setItem('state', JSON.stringify(newState))
+        return newState
+      } else {
+        newState.readings = [...newState.readings, { ...action.payload }]
+        window.localStorage.setItem('state', JSON.stringify(newState))
+        return newState
+      }
+    }
+    case StoreActionType.READ_REM: {
+      const newState = { ...state }
+      const index = newState.readings.findIndex(item => item.id === action.payload.id)
+      if (index >= 0) {
+        newState.readings = [...newState.readings.slice(0, index), ...newState.readings.slice(index+1)]
+        window.localStorage.setItem('state', JSON.stringify(newState))
+        return newState
+      } else {
+        window.localStorage.setItem('state', JSON.stringify(newState))
+        return newState
+      }
     }
     default: return state
   }
