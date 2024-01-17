@@ -174,7 +174,7 @@ export default function Home() {
                   <Typography color="inherit">({recommends[stepRecommends].ratings_count})</Typography>
                 </Box>
                 <Typography color="gray" variant="caption">
-                  Similar to "{recommendTitle}"
+                  Similar to {recommendTitle}
                 </Typography>
               </Box> :
               <Box height="100%" display="flex" flexDirection="column" textAlign="center" justifyContent="center" alignItems="center" gap={2}>
