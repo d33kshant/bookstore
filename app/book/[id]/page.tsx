@@ -3,15 +3,15 @@
 import { Box, Button, Chip, Divider, IconButton, Paper, Rating, Skeleton, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import { Book } from "@prisma/client"
-import { AddShoppingCart, BookmarkAddOutlined, Refresh, Star } from "@mui/icons-material"
-import { CartContext } from "@/app/contexts/CartContext"
-import { CartActionType } from "@/app/reducers/CartReducer"
+import { AddShoppingCart, BookmarkAddOutlined, BookmarkRemoveOutlined, Refresh, Star } from "@mui/icons-material"
+import { StoreContext } from "@/app/contexts/StoreContext"
+import { StoreActionType } from "@/app/reducers/StoreReducer"
 import Carousel from "@/app/components/Carousel"
 import { ToastContext } from "@/app/contexts/ToastContext"
 
 export default function BookPage({ params }: { params: { id: string } }) {
 
-  const { dispatch } = useContext(CartContext)
+  const { state: { readings }, dispatch } = useContext(StoreContext)
   const { toast } = useContext(ToastContext)
 
   const [book, setBook] = useState<Book | null>(null)
@@ -45,7 +45,7 @@ export default function BookPage({ params }: { params: { id: string } }) {
 
       if (data) {
         setRecommends(data.books)
-        setMaxSteps(data.books.length)
+        setMaxSteps(data.books?.length)
         setStep(0)
       }
     }
@@ -69,9 +69,21 @@ export default function BookPage({ params }: { params: { id: string } }) {
   }
 
   const addToCart = () => {
-    dispatch({ type: CartActionType.ADD, payload: { ...book } })
+    dispatch({ type: StoreActionType.CART_ADD, payload: { ...book } })
     toast("Book added to cart", "success")
   }
+
+  const addToReading = () => {
+    dispatch({ type: StoreActionType.READ_ADD, payload: { ...book }})
+    toast("Added to readings", "success")
+  }
+  
+  const removeFromReading = () => {
+    dispatch({ type: StoreActionType.READ_REM, payload: { ...book }})
+    toast("Removed from readings", "success")
+  }
+
+  const inReading = !!readings?.find(item => item.id === params.id)
 
   return (
     <Box display="flex" flexDirection="column" width="100%" gap={2}>
@@ -93,7 +105,14 @@ export default function BookPage({ params }: { params: { id: string } }) {
             <Skeleton height={32} width={250} />
             }
             <Box display="flex" gap={1}>
-              {/* <Button variant="contained" color="success" startIcon={<BookmarkAddOutlined />}>Save For Later</Button> */}
+              <Button
+                disableElevation
+                variant="contained" color={inReading ? "error" : "success"}
+                disabled={!book}
+                onClick={inReading ? removeFromReading : addToReading}
+                startIcon={inReading ? <BookmarkRemoveOutlined /> : <BookmarkAddOutlined />}>
+                {inReading ? "Remove Reading" : "Add in Readings"}
+              </Button>
               <Button disabled={!book} disableElevation onClick={addToCart} variant="contained" color="secondary" startIcon={<AddShoppingCart />}>Add To Cart</Button>
             </Box>
           </Box>

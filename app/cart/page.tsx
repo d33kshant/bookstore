@@ -2,13 +2,13 @@
 import { Box, Button, Divider, Paper, Typography } from "@mui/material"
 import { useContext } from "react"
 import CartItem from "@/app/components/CartItem"
-import { CartContext } from "@/app/contexts/CartContext"
-import { CartActionType } from "../reducers/CartReducer"
-import { ToastContext } from "../contexts/ToastContext"
+import { StoreContext } from "@/app/contexts/StoreContext"
+import { StoreActionType } from "@/app/reducers/StoreReducer"
+import { ToastContext } from "@/app/contexts/ToastContext"
 import { AddShoppingCartOutlined } from "@mui/icons-material"
 
 export default function CartPage() {
-  const { state: { cart }, dispatch } = useContext(CartContext)
+  const { state: { cart }, dispatch } = useContext(StoreContext)
   const { toast } = useContext(ToastContext)
 
   const price = cart.reduce((ac, curr) => ac + curr.original_price * curr.count, 0)
@@ -16,7 +16,7 @@ export default function CartPage() {
 
   const checkOut = () => {
     toast(`Books of $${price-discount} checked out`, "success")
-    dispatch({ type: CartActionType.CLR, payload: null })
+    dispatch({ type: StoreActionType.CART_CLR, payload: null })
   }
 
   if (cart.length <= 0) {

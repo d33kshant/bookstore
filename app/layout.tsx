@@ -5,10 +5,10 @@ import { Alert, Box, Snackbar } from '@mui/material'
 import { useReducer, useState } from 'react'
 import AppBar from '@/app/components/AppBar'
 import AppDrawer from '@/app/components/AppDrawer'
-import { CartInit, CartReducer } from "@/app/reducers/CartReducer"
+import { StoreInit, StoreReducer } from "@/app/reducers/StoreReducer"
 
 import './globals.css'
-import { CartProvider } from "./contexts/CartContext"
+import { CartProvider } from "./contexts/StoreContext"
 import { ToastProvider, ToastType } from "./contexts/ToastContext"
 
 export default function RootLayout({
@@ -17,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
 
-  const [ state, dispatch ] = useReducer(CartReducer, { cart: [] }, CartInit)
+  const [ state, dispatch ] = useReducer(StoreReducer, { cart: [] }, StoreInit)
 
   const [toastOpen, setToastOpen] = useState(false)
   const [toast, setToast] = useState<{ message: string, kind: ToastType } | null>(null)

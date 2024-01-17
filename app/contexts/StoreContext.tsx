@@ -1,6 +1,5 @@
-import { Book } from "@prisma/client"
 import { Dispatch, createContext } from "react"
-import { CartAction } from "../reducers/CartReducer"
+import { Store, StoreAction } from "@/app/reducers/StoreReducer"
 
-export const CartContext = createContext<{ state: { cart: (Book & { count: number })[] }, dispatch: Dispatch<CartAction> }>({ state: { cart: [] }, dispatch: () => { } })
-export const CartProvider = CartContext.Provider
+export const StoreContext = createContext<{ state: Store, dispatch: Dispatch<StoreAction> }>({ state: { cart: [], readings: [] }, dispatch: () => { } })
+export const CartProvider = StoreContext.Provider

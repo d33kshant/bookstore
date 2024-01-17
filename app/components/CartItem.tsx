@@ -2,8 +2,8 @@ import { Add, Clear, Remove } from "@mui/icons-material";
 import { Box, Button, ButtonGroup, Divider, Paper, Typography } from "@mui/material";
 import { Book } from "@prisma/client";
 import { useContext } from "react";
-import { CartContext } from "../contexts/CartContext";
-import { CartActionType } from "../reducers/CartReducer";
+import { StoreContext } from "@/app/contexts/StoreContext";
+import { StoreActionType } from "@/app/reducers/StoreReducer";
 
 export default function CartItem({
   id,
@@ -15,7 +15,7 @@ export default function CartItem({
   lastItem,
   count,
 }: Book & { count: number, lastItem: boolean }) {
-  const { dispatch } = useContext(CartContext)
+  const { dispatch } = useContext(StoreContext)
   return (
     <>
       <Box display="flex" gap={2} p={2}>
@@ -35,15 +35,15 @@ export default function CartItem({
           </Box>
           <Box display="flex">
             <ButtonGroup sx={{ flex: 1, mt: "auto" }} size="small">
-              <Button onClick={() => { dispatch({ type: CartActionType.ADD, payload: { id } }) }}>
+              <Button onClick={() => { dispatch({ type: StoreActionType.CART_ADD, payload: { id } }) }}>
                 <Add fontSize="small" />
               </Button>
               <Button disableTouchRipple disableRipple disableFocusRipple disableElevation>{count}</Button>
-              <Button onClick={() => { dispatch({ type: CartActionType.REM, payload: { id } }) }} >
+              <Button onClick={() => { dispatch({ type: StoreActionType.CART_REM, payload: { id } }) }} >
                 <Remove fontSize="small" />
               </Button>
             </ButtonGroup>
-            <Button onClick={() => { dispatch({ type: CartActionType.DEL, payload: { id } }) }} color="error" size="small" variant="outlined">
+            <Button onClick={() => { dispatch({ type: StoreActionType.CART_DEL, payload: { id } }) }} color="error" size="small" variant="outlined">
               <Clear fontSize="small" />
             </Button>
           </Box>

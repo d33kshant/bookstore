@@ -3,7 +3,7 @@ import { Book } from "@prisma/client"
 
 type CartItem = Book & { count: number }
 
-interface Store {
+export interface Store {
   cart: CartItem[],
   readings: Book[],
 }
