@@ -1,11 +1,15 @@
 "use client"
-import { Box, Divider, IconButton, Paper, Skeleton, Typography } from "@mui/material"
-import { BookmarkAddOutlined, KeyboardArrowLeft, KeyboardArrowRight, Star } from "@mui/icons-material"
-import { useEffect, useState } from "react"
+import { Box, Divider, IconButton, Paper, Skeleton, Tooltip, Typography } from "@mui/material"
+import { BookmarkAddOutlined, InfoOutlined, KeyboardArrowLeft, KeyboardArrowRight, Refresh, Star } from "@mui/icons-material"
+import { useContext, useEffect, useState } from "react"
 import { Book, Offer } from "@prisma/client"
 import Carousel from "@/app/components/Carousel"
+import { StoreContext } from "./contexts/StoreContext"
 
 export default function Home() {
+
+  const { state: { readings } } = useContext(StoreContext)
+
   const [step, setStep] = useState(0)
   const [maxSteps, setMaxSteps] = useState(1)
   const [topBooks, setTopBooks] = useState<Book[]>([])
@@ -13,6 +17,12 @@ export default function Home() {
   const [stepOffer, setStepOffer] = useState(0)
   const [maxStepsOffer, setMaxStepsOffer] = useState(1)
   const [offers, setOffers] = useState<Offer[]>([])
+
+  const [stepRecommends, setStepRecommends] = useState(0)
+  const [maxStepsRecommends, setMaxStepsRecommends] = useState(1)
+  const [recommends, setRecommends] = useState<Book[] | null>(null)
+  const [recommendsPage, setRecommendsPage] = useState(1)
+  const [recommendTitle, setRecommendTitle] = useState('')
 
   useEffect(() => {
     const fetchTopBooks = async () => {
@@ -39,6 +49,26 @@ export default function Home() {
     }
     fetchOffers()
   }, [])
+
+  useEffect(() => {
+    const fetchRecommendation = async () => {
+      if (readings.length > 0) {
+        const selection = readings[Math.floor(Math.random() * readings.length)]
+        setRecommendTitle(selection.title)
+        const base = new URL(window.location.origin + '/api/recommend')
+        base.searchParams.set("id", selection.id)
+        base.searchParams.set("page", recommendsPage + '')
+        const response = await fetch(base)
+        const data = await response.json()
+        if (data.books) {
+          setRecommends(data.books)
+          setStepRecommends(0)
+          setMaxStepsRecommends(data.books.length)
+        }
+      }
+    }
+    fetchRecommendation()
+  }, [readings, recommendsPage])
 
   const nextStep = () => {
     setStep(prev => {
@@ -68,6 +98,20 @@ export default function Home() {
     })
   }
 
+  const nextRecommend = () => {
+    setStepRecommends(prev => {
+      if (prev === maxStepsRecommends - 1) return 0
+      else return prev + 1
+    })
+  }
+
+  const prevRecommend = () => {
+    setStepRecommends(prev => {
+      if (prev === 0) return maxStepsRecommends - 1
+      else return prev - 1
+    })
+  }
+
   return (
     <Box width="100%" display="flex" justifyContent="center">
       <Box width="100%" display="flex" flexDirection="column" gap={2}>
@@ -89,18 +133,61 @@ export default function Home() {
             </div>
           </Paper> :
           <Skeleton variant="rounded" animation="wave" width="100%" height={300} />}
-        <Paper sx={{ overflow: "hidden" }}>
-          <Box>
-            <Box py={1} px={2}>
-              <Typography variant="h6" textTransform="uppercase">For You</Typography>
+        <Carousel
+          onNextClick={nextRecommend}
+          onBackClick={prevRecommend}
+          title="Recommended Readings"
+          steps={maxStepsRecommends}
+          activeStep={stepRecommends}
+          header={
+            <Box px={2} py={1} gap={1} display="flex" alignItems="center">
+              <Typography flex={1} textTransform="uppercase" variant="h6">For You</Typography>
+              <IconButton disabled={(recommends ? recommends.length <= 0 : true) || recommendsPage > 10} size="small" onClick={() => setRecommendsPage(prev => prev + 1)}>
+                <Refresh />
+              </IconButton>
             </Box>
-            <Divider />
-            <Box height={300} gap={2} display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-              <BookmarkAddOutlined color="action" fontSize="large" />
-              <Typography textAlign="center" maxWidth={210} color="gray">Add or purchase some book to get recommendation</Typography>
+          }
+          disable={recommends ? recommends.length < 0 : true}
+        >
+          {!recommends ?
+            <Box height="100%" display="flex" flexDirection="column" textAlign="center" justifyContent="center" alignItems="center" gap={2}>
+              <Skeleton animation="wave" variant="rounded" height={160} width={110} />
+              <Box display="flex" flexDirection="column" gap={1} alignItems="center">
+                <Skeleton animation="wave" variant="rounded" height="1rem" width={200} />
+                <Skeleton animation="wave" variant="rounded" height="1rem" width={160} />
+              </Box>
+              <Skeleton animation="wave" variant="rounded" height="1rem" width={180} />
+              <Skeleton animation="wave" variant="rounded" height="1rem" width={180} />
             </Box>
-          </Box>
-        </Paper>
+            : recommends?.length > 0 ?
+              <Box component="a" href={`/book/${recommends[stepRecommends].id}`} height="100%" display="flex" flexDirection="column" textAlign="center" justifyContent="center" alignItems="center" p={2} gap={2}>
+                <Paper sx={{ overflow: "hidden" }}>
+                  <img className="w-fit h-40" src={recommends[stepRecommends].thumbnail} alt={recommends[stepRecommends].title} />
+                </Paper>
+                <Box>
+                  <Typography fontWeight={500}>{recommends[stepRecommends].title}</Typography>
+                  <Typography color="gray">{recommends[stepRecommends].categories}</Typography>
+                </Box>
+                <Box color="gray" display="flex" gap={1}>
+                  <Star fontSize="small" color="action" />
+                  <Typography color="inherit">{recommends[stepRecommends].average_rating}</Typography>
+                  <Typography color="inherit">({recommends[stepRecommends].ratings_count})</Typography>
+                </Box>
+                <Typography color="gray" variant="caption">
+                  Similar to "{recommendTitle}"
+                </Typography>
+              </Box> :
+              <Box height="100%" display="flex" flexDirection="column" textAlign="center" justifyContent="center" alignItems="center" gap={2}>
+                <Skeleton animation="wave" variant="rounded" height={160} width={110} />
+                <Box display="flex" flexDirection="column" gap={1} alignItems="center">
+                  <Skeleton animation="wave" variant="rounded" height="1rem" width={200} />
+                  <Skeleton animation="wave" variant="rounded" height="1rem" width={160} />
+                </Box>
+                <Skeleton animation="wave" variant="rounded" height="1rem" width={180} />
+                <Skeleton animation="wave" variant="rounded" height="1rem" width={180} />
+              </Box>
+          }
+        </Carousel>
         <Carousel
           title="Top Readings"
           steps={maxSteps}
