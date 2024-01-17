@@ -149,43 +149,44 @@ export default function Home() {
           }
           disable={recommends ? recommends.length < 0 : true}
         >
-          {!recommends ?
-            <Box height="100%" display="flex" flexDirection="column" textAlign="center" justifyContent="center" alignItems="center" gap={2}>
-              <Skeleton animation="wave" variant="rounded" height={160} width={110} />
-              <Box display="flex" flexDirection="column" gap={1} alignItems="center">
-                <Skeleton animation="wave" variant="rounded" height="1rem" width={200} />
-                <Skeleton animation="wave" variant="rounded" height="1rem" width={160} />
+          {
+            readings.length <= 0 ?
+              <Box height="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="center" gap={2}>
+                <BookmarkAddOutlined fontSize="large" color="action" />
+                <Box display="flex" flexDirection="column" alignItems="center">
+                  <Typography color="gray">Add some books in reading</Typography>
+                  <Typography color="gray">list for recommendation</Typography>
+                </Box>
               </Box>
-              <Skeleton animation="wave" variant="rounded" height="1rem" width={180} />
-              <Skeleton animation="wave" variant="rounded" height="1rem" width={180} />
-            </Box>
-            : recommends?.length > 0 ?
-              <Box component="a" href={`/book/${recommends[stepRecommends].id}`} height="100%" display="flex" flexDirection="column" textAlign="center" justifyContent="center" alignItems="center" p={2} gap={2}>
-                <Paper sx={{ overflow: "hidden" }}>
-                  <img className="w-fit h-40" src={recommends[stepRecommends].thumbnail} alt={recommends[stepRecommends].title} />
-                </Paper>
-                <Box>
-                  <Typography fontWeight={500}>{recommends[stepRecommends].title}</Typography>
-                  <Typography color="gray">{recommends[stepRecommends].categories}</Typography>
+              :
+              !recommends ?
+                <Box height="100%" display="flex" flexDirection="column" textAlign="center" justifyContent="center" alignItems="center" gap={2}>
+                  <Skeleton animation="wave" variant="rounded" height={160} width={110} />
+                  <Box display="flex" flexDirection="column" gap={1} alignItems="center">
+                    <Skeleton animation="wave" variant="rounded" height="1rem" width={200} />
+                    <Skeleton animation="wave" variant="rounded" height="1rem" width={160} />
+                  </Box>
+                  <Skeleton animation="wave" variant="rounded" height="1rem" width={180} />
+                  <Skeleton animation="wave" variant="rounded" height="1rem" width={180} />
                 </Box>
-                <Box color="gray" display="flex" gap={1}>
-                  <Star fontSize="small" color="action" />
-                  <Typography color="inherit">{recommends[stepRecommends].average_rating}</Typography>
-                  <Typography color="inherit">({recommends[stepRecommends].ratings_count})</Typography>
+                :
+                <Box component="a" href={`/book/${recommends[stepRecommends].id}`} height="100%" display="flex" flexDirection="column" textAlign="center" justifyContent="center" alignItems="center" p={2} gap={2}>
+                  <Paper sx={{ overflow: "hidden" }}>
+                    <img className="w-fit h-40" src={recommends[stepRecommends].thumbnail} alt={recommends[stepRecommends].title} />
+                  </Paper>
+                  <Box>
+                    <Typography fontWeight={500}>{recommends[stepRecommends].title}</Typography>
+                    <Typography color="gray">{recommends[stepRecommends].categories}</Typography>
+                  </Box>
+                  <Box color="gray" display="flex" gap={1}>
+                    <Star fontSize="small" color="action" />
+                    <Typography color="inherit">{recommends[stepRecommends].average_rating}</Typography>
+                    <Typography color="inherit">({recommends[stepRecommends].ratings_count})</Typography>
+                  </Box>
+                  <Typography color="gray" variant="caption">
+                    Similar to {recommendTitle}
+                  </Typography>
                 </Box>
-                <Typography color="gray" variant="caption">
-                  Similar to {recommendTitle}
-                </Typography>
-              </Box> :
-              <Box height="100%" display="flex" flexDirection="column" textAlign="center" justifyContent="center" alignItems="center" gap={2}>
-                <Skeleton animation="wave" variant="rounded" height={160} width={110} />
-                <Box display="flex" flexDirection="column" gap={1} alignItems="center">
-                  <Skeleton animation="wave" variant="rounded" height="1rem" width={200} />
-                  <Skeleton animation="wave" variant="rounded" height="1rem" width={160} />
-                </Box>
-                <Skeleton animation="wave" variant="rounded" height="1rem" width={180} />
-                <Skeleton animation="wave" variant="rounded" height="1rem" width={180} />
-              </Box>
           }
         </Carousel>
         <Carousel
